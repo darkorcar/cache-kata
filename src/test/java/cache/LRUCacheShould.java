@@ -1,9 +1,8 @@
 package cache;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class LRUCacheShould {
 
@@ -18,4 +17,12 @@ public class LRUCacheShould {
         assertEquals(-1, cache.get(1));
     }
 
+    @Test
+    public void insert_the_value() {
+        LRUCache cache = new LRUCache();
+
+        cache.set(1, 10);
+
+        assertEquals(10, cache.get(1));
+    }
 }
