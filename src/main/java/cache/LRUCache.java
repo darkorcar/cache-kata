@@ -3,14 +3,14 @@ package cache;
 import java.util.LinkedList;
 import java.util.List;
 
-public class LRUCache<T> {
+public class LRUCache {
 
-    private List<T> storage;
+    private List<Integer> storage;
     private int capacity;
 
     public LRUCache(int capacity) {
         this.capacity = capacity;
-        storage = new LinkedList<T>();
+        storage = new LinkedList<>();
     }
 
 }
