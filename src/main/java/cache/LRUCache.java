@@ -11,4 +11,7 @@ public class LRUCache {
         storage = new LinkedList<>();
     }
 
+    public int get(int key) {
+        return -1;
+    }
 }
