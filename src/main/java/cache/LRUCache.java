@@ -1,28 +1,93 @@
 package cache;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public class LRUCache {
 
-    private List<Integer> storage;
-    private Map<Integer, Integer> index;
+    private CacheNode firstNode;
+    private CacheNode lastNode;
+    private Map<Integer, CacheNode> index;
+    private int capacity;
 
-    public LRUCache() {
-        storage = new LinkedList<>();
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        firstNode = null;
+        lastNode = null;
         index = new HashMap<>();
     }
 
     public int get(int key) {
-        var i = index.get(key);
+        var lastRetrievedNode = index.get(key);
 
-        return (i == null) ? -1 : storage.get(i);
+        if (lastRetrievedNode != null) {
+            var prev = lastRetrievedNode.getPrev();
+            var next = lastRetrievedNode.getNext();
+
+            firstNode.setPrev(lastRetrievedNode);
+
+            if (lastNode == lastRetrievedNode){
+                lastNode = lastRetrievedNode.getPrev();
+            }
+
+            if (prev != null) {
+                prev.setNext(next);
+            }
+
+            if (next != null) {
+                next.setPrev(prev);
+            }
+
+            lastRetrievedNode.setPrev(null);
+            lastRetrievedNode.setNext(firstNode);
+
+            return lastRetrievedNode.getElement();
+
+        }
+
+        return -1;
     }
 
     public void set(int key, int value) {
-        storage.add(0, value);
-        index.put(key, 0);
+
+
+        var element = index.get(key);
+
+        if (element != null) {
+            element.setElement(value);
+            this.get(key);
+        } else {
+
+            if (capacity == this.size()) {
+
+                if (lastNode != null) {
+                    var prev = lastNode.getPrev();
+                    if (prev != null) {
+                        prev.setNext(null);
+                    }
+
+                    index.remove(lastNode.getKey());
+
+                    lastNode = lastNode.getPrev();
+                }
+
+            }
+
+            var newFirst = new CacheNode(null, firstNode, value, key);
+
+            if (firstNode != null) {
+                firstNode.setPrev(newFirst);
+            } else {
+                lastNode = newFirst;
+            }
+
+            firstNode = newFirst;
+
+            index.put(key, newFirst);
+        }
+    }
+
+    public int size() {
+        return index.size();
     }
 }
